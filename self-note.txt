@@ -1,0 +1,9 @@
+#self note 
+
+REPL - Read, Eval, Print, Loop
+
+Enter node on terminal and click TAB you can see the global variables that are available in node
+For example I choose util. plus 2 click of tabs to see the other methods
+
+2+5 = 7
+_ + 3 = 10 // it shows that the result get from the underscore

@@ -1,17 +1,1 @@
-# node_bootcamp
-
-# self note 
-# 
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
+# README.md
