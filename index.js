@@ -32,14 +32,25 @@ console.log('File is written!');
 // - -  -  -  -  - - -  -  -  -  - 
 // -- SERVER
 
-const server = http.createServer((req, res) => { 
+// Used synchronous version it is in the top level code and is only excuted once.
+
+    const data = fs.readFileSync(`${__dirname}/fc/dev-data/data.json`, 'utf8')
+    const dataObj = JSON.parse(data);
+
+    const server = http.createServer((req, res) => { 
     const PathName = req.url;
     
-    if (PathName === '/' || PathName === '/Overview' ) {
+    if (PathName === '/' || PathName === '/overview' ) {
         res.end('This is the Overview or Main');
-    } else if (PathName === '/About') {
+    } 
+    else if (PathName === '/about') {
         res.end('This is the About!');
-    } else {
+    } 
+    else if (PathName === '/api'){
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.end(data);
+    } 
+    else {
         res.writeHead(404, {
             'Content-type' : 'text/html',
             'my-own-header': 'hello-world'
