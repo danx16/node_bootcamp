@@ -33,9 +33,10 @@ console.log('File is written!');
 // -- SERVER
 
 // Used synchronous version it is in the top level code and is only excuted once.
+// The top level code actually only gets executed once right in the beginning
 
-    const data = fs.readFileSync(`${__dirname}/fc/dev-data/data.json`, 'utf8')
-    const dataObj = JSON.parse(data);
+    const data = fs.readFileSync(`${__dirname}/fc/dev-data/data.json`, 'utf8') // Read the file
+    const dataObj = JSON.parse(data); // parse into an object
 
     const server = http.createServer((req, res) => { 
     const PathName = req.url;
@@ -47,7 +48,10 @@ console.log('File is written!');
         res.end('This is the About!');
     } 
     else if (PathName === '/api'){
-        res.writeHead(200, {'Content-Type': 'application/json'});
+    // do not read this file each time that there is a request and 
+    // instead simply send back the data that we have in top level code
+
+        res.writeHead(200, {'Content-Type': 'application/json'}); // telling the browser that index sending back JSON
         res.end(data);
     } 
     else {
