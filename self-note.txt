@@ -13,3 +13,4 @@ fs = file system
 `${__dirname}` = translates to the directory in which the script that we're currently executing is located.
 
 JSON.parse = JSON.parse = take JSON Code, which is actually a string and will then automatically turn in JavaScript. A javascript object or array
+
