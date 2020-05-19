@@ -34,29 +34,61 @@ console.log('File is written!');
 
 // Used synchronous version it is in the top level code and is only excuted once.
 // The top level code actually only gets executed once right in the beginning
-    const data = fs.readFileSync(`${__dirname}/fc/dev-data/data.json`, 'utf8'); // Read the file
+
+    const replaceTemplate = (temp, product) => {
+        let output = temp.replace(/{%PRODUCTNAME%}/g, product.productName);
+        output = output.replace(/{%IMAGE%}/g, product.image);
+        output = output.replace(/{%PRICE%}/g, product.price);
+        output = output.replace(/{%FROM%}/g, product.from);
+        output = output.replace(/{%NUTRIENTS%}/g, product.nutrients);
+        output = output.replace(/{%QUANTITY%}/g, product.quantity);
+        output = output.replace(/{%DESCRIPTION%}/g, product.description);
+        output = output.replace(/{%ID%}/g, product.id);
+
+
+        if (!product.organic) output = output.replace(/{%NOT_ORGANIC%}/g, 'not-organic');
+        return output;
+        
+    }
+
+    // Read the template overview
+    const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`, 'utf8'); 
+    const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`, 'utf8'); 
+    const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`, 'utf8');
+
+    const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf8'); // Read the file
     const dataObj = JSON.parse(data); // parse into an object
 
     const server = http.createServer((req, res) => {    
     const pathName = req.url;
 
     // Overview
-    if (pathname === '/' || pathname === '/overview' ) {
-        res.end('This is the OVERVIEW');
+    if (pathName === '/' || pathName === '/overview' ) {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+
+        const cardsHtml = dataObj.map(el => replaceTemplate(tempCard, el)).join('') // use tempCard function and element of json. // Which is data of the propertoes
+        // dataObj = holds all the product and each iteration, we will replace the placeholders
+        //            in the template card with the current product which is el or element
+        //            and this () => () arrow function implicitly return it here
+
+        const output = tempOverview.replace('{%PRODUCT_CARDS%}', cardsHtml);
+        res.end(output);
     } 
 
    // Product    
-    else if (pathname === '/product') {
+    else if (pathName === '/product') {
         res.end('This is the PRODUCT');
     }
     // API
-    else if (pathname === '/api'){
+    else if (pathName === '/api'){
     // do not read this file each time that there is a request and 
     // instead simply send back the data that we have in top level code
 
         res.writeHead(200, {'Content-Type': 'application/json'}); // telling the browser that index sending back JSON
         res.end(data);
     } 
+
+    // Not Found
     else {
         res.writeHead(404, {
             'Content-type' : 'text/html',
