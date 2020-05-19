@@ -36,18 +36,18 @@ console.log('File is written!');
 // The top level code actually only gets executed once right in the beginning
 
     const replaceTemplate = (temp, product) => {
-        let output = temp.replace('/{%PRODUCTNAME%}/g', product.productName);
-        output = temp.replace('/{%IMAGE%}/g', product.image);   
-        output = temp.replace('/{%PRICE%}/g', product.price);   
-        output = temp.replace('/{%FROM%}/g', product.from);   
-        output = temp.replace('/{%NUTRIENTS%}/g', product.nutrients);   
-        output = temp.replace('/{%QUANTITY%}/g', product.quantity);   
-        output = temp.replace('/{%PRICE%}/g', product.price);   
-        output = temp.replace('/{%DESCRIPTION%}/g', product.description);   
-        output = temp.replace('/{%ID%}/g', product.id);  
+        let output = temp.replace(/{%PRODUCTNAME%}/g, product.productName);
+        output = temp.replace(/{%IMAGE%}/g, product.image);   
+        output = temp.replace(/{%PRICE%}/g, product.price);   
+        output = temp.replace(/{%FROM%}/g, product.from);   
+        output = temp.replace(/{%NUTRIENTS%}/g, product.nutrients);   
+        output = temp.replace(/{%QUANTITY%}/g, product.quantity);   
+        output = temp.replace(/{%PRICE%}/g, product.price);   
+        output = temp.replace(/{%DESCRIPTION%}/g, product.description);   
+        output = temp.replace(/{%ID%}/g, product.id);  
         
         if(!product.organic)
-            output = temp.replace('/{%NOT_ORGANIC%}/g', 'not-organic');
+            output = temp.replace(/{%NOT_ORGANIC%}/g, 'not-organic');
             return output;  
  
     };
@@ -55,10 +55,11 @@ console.log('File is written!');
     const tempOverview = fs.readFileSync(`${__dirname}/fc/templates/overview.html`, 'utf8'); 
     const tempCard = fs.readFileSync(`${__dirname}/fc/templates/template-card.html`, 'utf8'); 
     const tempProduct = fs.readFileSync(`${__dirname}/fc/templates/product.html`, 'utf8'); 
+
     const data = fs.readFileSync(`${__dirname}/fc/dev-data/data.json`, 'utf8'); // Read the file
     const dataObj = JSON.parse(data); // parse into an object
 
-    const server = http.createServer((req, res) => { 
+    const server = http.createServer((req, res) => {    
     const PathName = req.url;
     
     // Overview
@@ -72,8 +73,7 @@ console.log('File is written!');
 
    // Product    
     else if (PathName === '/product') {
-        const output = replaceTemplate(tempProduct, products);
-        res.end(output);
+        res.end("This is the Product");
     }
 
     // About
