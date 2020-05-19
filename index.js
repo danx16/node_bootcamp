@@ -59,11 +59,12 @@ console.log('File is written!');
     const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf8'); // Read the file
     const dataObj = JSON.parse(data); // parse into an object
 
-    const server = http.createServer((req, res) => {    
-    const pathName = req.url;
+    const server = http.createServer((req, res) => { 
+    
+    const {query, pathname} = url.parse(req.url, true);   
 
     // Overview
-    if (pathName === '/' || pathName === '/overview' ) {
+    if (pathname === '/' || pathname === '/overview' ) {
         res.writeHead(200, {'Content-Type': 'text/html'});
 
         const cardsHtml = dataObj.map(el => replaceTemplate(tempCard, el)).join('') // use tempCard function and element of json. // Which is data of the propertoes
@@ -76,11 +77,20 @@ console.log('File is written!');
     } 
 
    // Product    
-    else if (pathName === '/product') {
-        res.end('This is the PRODUCT');
+    else if (pathname === '/product') {
+       res.writeHead(200, {'Content-Type': 'text/html'});
+       // Readetrieving an element based on a query string
+       const productDisplay = dataObj[query.id]; // Product right from this data object 
+
+       // ReplaceTemplate to put in a template and a product. So product is an object with all of these properties
+       // So in replaceTemplate, we pass in the template product that we loaded up from the tempProduct
+       const output = replaceTemplate(tempProduct, productDisplay); 
+
+       res.end(output);
     }
+
     // API
-    else if (pathName === '/api'){
+    else if (pathname === '/api'){
     // do not read this file each time that there is a request and 
     // instead simply send back the data that we have in top level code
 
