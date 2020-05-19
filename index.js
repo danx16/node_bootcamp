@@ -35,18 +35,53 @@ console.log('File is written!');
 // Used synchronous version it is in the top level code and is only excuted once.
 // The top level code actually only gets executed once right in the beginning
 
-    const data = fs.readFileSync(`${__dirname}/fc/dev-data/data.json`, 'utf8') // Read the file
+    const replaceTemplate = (temp, product) => {
+        let output = temp.replace('/{%PRODUCTNAME%}/g', product.productName);
+        output = temp.replace('/{%IMAGE%}/g', product.image);   
+        output = temp.replace('/{%PRICE%}/g', product.price);   
+        output = temp.replace('/{%FROM%}/g', product.from);   
+        output = temp.replace('/{%NUTRIENTS%}/g', product.nutrients);   
+        output = temp.replace('/{%QUANTITY%}/g', product.quantity);   
+        output = temp.replace('/{%PRICE%}/g', product.price);   
+        output = temp.replace('/{%DESCRIPTION%}/g', product.description);   
+        output = temp.replace('/{%ID%}/g', product.id);  
+        
+        if(!product.organic)
+            output = temp.replace('/{%NOT_ORGANIC%}/g', 'not-organic');
+            return output;  
+ 
+    };
+
+    const tempOverview = fs.readFileSync(`${__dirname}/fc/templates/overview.html`, 'utf8'); 
+    const tempCard = fs.readFileSync(`${__dirname}/fc/templates/template-card.html`, 'utf8'); 
+    const tempProduct = fs.readFileSync(`${__dirname}/fc/templates/product.html`, 'utf8'); 
+    const data = fs.readFileSync(`${__dirname}/fc/dev-data/data.json`, 'utf8'); // Read the file
     const dataObj = JSON.parse(data); // parse into an object
 
     const server = http.createServer((req, res) => { 
     const PathName = req.url;
     
+    // Overview
     if (PathName === '/' || PathName === '/overview' ) {
-        res.end('This is the Overview or Main');
+        res.writeHead(200, {'Content-Type': 'text/html'});
+
+        const cardsHtml = dataObj.map(el => replaceTemplate(tempCard, el)).join('');
+        const output = tempOverview.replace('{%PRODUCT_CARDS%}', cardsHtml);
+        res.end(output); // to display the overview page
     } 
+
+   // Product    
+    else if (PathName === '/product') {
+        const output = replaceTemplate(tempProduct, products);
+        res.end(output);
+    }
+
+    // About
     else if (PathName === '/about') {
         res.end('This is the About!');
     } 
+
+    // API
     else if (PathName === '/api'){
     // do not read this file each time that there is a request and 
     // instead simply send back the data that we have in top level code
